@@ -45,6 +45,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.log4j.Logger;
 
 /**
  * This class calls the Google's spell check service
@@ -59,6 +60,7 @@ public class SpellChecker {
     protected Language language;
     protected boolean overHttps;
     protected static final String GOOGLE_SC_URI = "www.google.com/tbproxy/spell";
+    protected static Logger logger = Logger.getLogger( SpellChecker.class );
 
     public SpellChecker() {
         language = Language.ENGLISH;
@@ -97,6 +99,9 @@ public class SpellChecker {
 
             byte[] requestData = marshall( request );
 
+            if( logger.isDebugEnabled() )
+                logger.debug( new String( requestData ) );
+
             InputStreamEntity ise = new InputStreamEntity( new ByteArrayInputStream( requestData ), -1 );
             ise.setContentType( "text/xml" );
 
@@ -114,6 +119,9 @@ public class SpellChecker {
             }
 
             bis.close();
+
+            if( logger.isDebugEnabled() )
+                logger.debug( buff );
 
             client.getConnectionManager().shutdown();
 
