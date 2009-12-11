@@ -18,33 +18,20 @@
 package org.xeustechnologies.googleapi.spelling;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
+import java.net.URLConnection;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.apache.log4j.Logger;
 
 /**
@@ -91,39 +78,37 @@ public class SpellChecker {
      * @return SpellResponse
      */
     public SpellResponse check(SpellRequest request) {
-        String uri = buildUri();
 
         try {
-            HttpClient client = buildHttpClient( config );
-            HttpPost post = new HttpPost( uri );
-
             byte[] requestData = marshall( request );
+
+            URLConnection conn = connect();
+            conn.setDoOutput( true );
+
+            conn.addRequestProperty( "Content-Type", "text/xml" );
+
+            BufferedOutputStream requestStream = new BufferedOutputStream( conn.getOutputStream() );
+
+            requestStream.write( requestData );
+            requestStream.flush();
+
+            requestStream.close();
 
             if( logger.isDebugEnabled() )
                 logger.debug( new String( requestData ) );
 
-            InputStreamEntity ise = new InputStreamEntity( new ByteArrayInputStream( requestData ), -1 );
-            ise.setContentType( "text/xml" );
-
-            post.setEntity( ise );
-
-            HttpResponse response = client.execute( post );
-            HttpEntity entity = response.getEntity();
-
             int c = 0;
             StringBuffer buff = new StringBuffer();
-            BufferedInputStream bis = new BufferedInputStream( entity.getContent() );
+            BufferedInputStream responseStream = new BufferedInputStream( conn.getInputStream() );
 
-            while(( c = bis.read() ) != -1) {
+            while(( c = responseStream.read() ) != -1) {
                 buff.append( (char) c );
             }
 
-            bis.close();
+            responseStream.close();
 
             if( logger.isDebugEnabled() )
                 logger.debug( buff );
-
-            client.getConnectionManager().shutdown();
 
             return unmarshall( buff.toString().getBytes() );
 
@@ -132,6 +117,18 @@ public class SpellChecker {
         }
 
         return null;
+    }
+
+    private URLConnection connect() throws IOException {
+        URL url = new URL( buildUri() );
+
+        if( config.isProxyEnabled() ) {
+            Proxy proxy = new Proxy( config.getProxyScheme(), new InetSocketAddress( config.getProxyHost(), config
+                    .getProxyPort() ) );
+            return url.openConnection( proxy );
+        }
+
+        return url.openConnection();
     }
 
     private byte[] marshall(SpellRequest request) throws JAXBException, IOException {
@@ -153,27 +150,6 @@ public class SpellChecker {
         Unmarshaller um = responseContext.createUnmarshaller();
 
         return (SpellResponse) um.unmarshal( new ByteArrayInputStream( response ) );
-    }
-
-    private HttpClient buildHttpClient(Configuration config) {
-        SchemeRegistry supportedSchemes = new SchemeRegistry();
-        supportedSchemes.register( new Scheme( "http", PlainSocketFactory.getSocketFactory(), 80 ) );
-        supportedSchemes.register( new Scheme( "https", SSLSocketFactory.getSocketFactory(), 443 ) );
-
-        HttpParams params = new BasicHttpParams();
-        HttpProtocolParams.setVersion( params, HttpVersion.HTTP_1_1 );
-        HttpProtocolParams.setContentCharset( params, "UTF-8" );
-        HttpProtocolParams.setUseExpectContinue( params, true );
-
-        ClientConnectionManager ccm = new ThreadSafeClientConnManager( params, supportedSchemes );
-        HttpClient client = new DefaultHttpClient( ccm, params );
-
-        if( config.isProxyEnabled() ) {
-            HttpHost proxy = new HttpHost( config.getProxyHost(), config.getProxyPort(), config.getProxyScheme() );
-            client.getParams().setParameter( ConnRoutePNames.DEFAULT_PROXY, proxy );
-        }
-
-        return client;
     }
 
     private String buildUri() {
