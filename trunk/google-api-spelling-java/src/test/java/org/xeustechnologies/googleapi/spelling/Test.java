@@ -9,8 +9,13 @@ public class Test {
 
         SpellChecker checker = new SpellChecker( config );
         checker.setOverHttps( true );
+        checker.setLanguage( Language.ENGLISH );
 
-        SpellResponse spellResponse = checker.check( "helloo worlrd" );
+        SpellRequest request = new SpellRequest();
+        request.setText( "helloo helloo worlrd" );
+        request.setIgnoreDuplicates( 1 );
+
+        SpellResponse spellResponse = checker.check( request );
 
         for( SpellCorrection sc : spellResponse.getCorrections() )
             System.out.println( sc.getValue() );
