@@ -1,3 +1,4 @@
+= Java API for Google Spelling Check service =
 
 == Comments and feedback ==
 
