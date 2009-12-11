@@ -17,6 +17,8 @@
 
 package org.xeustechnologies.googleapi.spelling;
 
+import java.net.Proxy.Type;
+
 /**
  * This class holds extra configuration, which is not part of Google's Spell
  * check service, but may be required by this API
@@ -46,8 +48,8 @@ public class Configuration {
         return proxyPort;
     }
 
-    public String getProxyScheme() {
-        return proxyScheme;
+    public Type getProxyScheme() {
+        return Type.valueOf( proxyScheme.toUpperCase() );
     }
 
     public boolean isProxyEnabled() {
