@@ -1,6 +1,6 @@
 = Introduction =
 
-This is a simple Java API that makes it very easy to call Google's spell checker service in Java applications.
+This is a simple Java API that makes it very easy to call Google's spell checker service from Java applications.
 
 
 = How to use it? =
