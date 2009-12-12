@@ -101,7 +101,7 @@ public class SpellChecker {
             StringBuffer buff = new StringBuffer();
             BufferedInputStream responseStream = new BufferedInputStream( conn.getInputStream() );
 
-            while(( c = responseStream.read() ) != -1) {
+            while (( c = responseStream.read() ) != -1) {
                 buff.append( (char) c );
             }
 
@@ -113,10 +113,9 @@ public class SpellChecker {
             return unmarshall( buff.toString().getBytes() );
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error( e, e );
+            throw new SpellCheckException( e );
         }
-
-        return null;
     }
 
     private URLConnection connect() throws IOException {
