@@ -3,11 +3,7 @@ package org.xeustechnologies.googleapi.spelling;
 public class Test {
     @org.junit.Test
     public void check() {
-
-        Configuration config = new Configuration();
-        config.setProxy( "10.105.24.70", 8080, "http" );
-
-        SpellChecker checker = new SpellChecker( config );
+        SpellChecker checker = new SpellChecker();
         checker.setOverHttps( true );
         checker.setLanguage( Language.ENGLISH );
 
