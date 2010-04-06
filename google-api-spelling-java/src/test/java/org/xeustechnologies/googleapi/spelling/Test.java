@@ -4,12 +4,12 @@ public class Test {
     @org.junit.Test
     public void check() {
         SpellChecker checker = new SpellChecker();
-        checker.setOverHttps( true );
-        checker.setLanguage( Language.ENGLISH );
+        checker.setOverHttps( true ); // Now default is true
+        checker.setLanguage( Language.ENGLISH ); // Default is English
 
         SpellRequest request = new SpellRequest();
         request.setText( "helloo helloo worlrd" );
-        request.setIgnoreDuplicates( 1 );
+        request.setIgnoreDuplicates( true );
 
         SpellResponse spellResponse = checker.check( request );
 
