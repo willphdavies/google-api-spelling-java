@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Xeus Technologies 
+ * Copyright 2010 Xeus Technologies 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -51,11 +51,12 @@ public class SpellChecker {
 
     public SpellChecker() {
         language = Language.ENGLISH;
+        overHttps = true;
     }
 
     public SpellChecker(Configuration config) {
+        this();
         this.config = config;
-        language = Language.ENGLISH;
     }
 
     /**
@@ -101,7 +102,7 @@ public class SpellChecker {
             StringBuffer buff = new StringBuffer();
             BufferedInputStream responseStream = new BufferedInputStream( conn.getInputStream() );
 
-            while (( c = responseStream.read() ) != -1) {
+            while(( c = responseStream.read() ) != -1) {
                 buff.append( (char) c );
             }
 
