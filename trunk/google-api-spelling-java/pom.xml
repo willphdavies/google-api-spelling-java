@@ -4,7 +4,7 @@
     <groupId>org.xeustechnologies.google-api</groupId>
     <artifactId>google-api-spelling-java</artifactId>
     <name>Java Google Spelling Check</name>
-    <version>1.0</version>
+    <version>1.1</version>
     <description>Java spell checker using Google API</description>
     <build>
         <sourceDirectory>${basedir}/src/main/java
