@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Xeus Technologies 
+ * Copyright 2010 Xeus Technologies 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -20,6 +20,7 @@ package org.xeustechnologies.googleapi.spelling;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author Kamran Zafar
@@ -30,7 +31,7 @@ public class SpellResponse {
 
     protected int error = 0;
 
-    protected int clipped = 0;
+    protected Boolean clipped = false;
 
     protected int charsChecked = 0;
 
@@ -46,11 +47,12 @@ public class SpellResponse {
     }
 
     @XmlAttribute(name = "clipped")
-    public int getClipped() {
+    @XmlJavaTypeAdapter(BooleanAdaptor.class)
+    public Boolean isClipped() {
         return clipped;
     }
 
-    public void setClipped(int clipped) {
+    public void setClipped(Boolean clipped) {
         this.clipped = clipped;
     }
 

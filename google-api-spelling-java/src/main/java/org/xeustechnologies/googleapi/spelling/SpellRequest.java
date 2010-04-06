@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Xeus Technologies 
+ * Copyright 2010 Xeus Technologies 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -20,6 +20,7 @@ package org.xeustechnologies.googleapi.spelling;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author Kamran Zafar
@@ -28,13 +29,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "spellrequest")
 public class SpellRequest {
 
-    protected int textAlreadyClipped = 0;
+    protected Boolean textAlreadyClipped = false;
 
-    protected int ignoreDuplicates = 0;
+    protected Boolean ignoreDuplicates = false;
 
-    protected int ignoreWordsWithDigits = 1;
+    protected Boolean ignoreWordsWithDigits = true;
 
-    protected int ignoreWordsWithAllCaps = 1;
+    protected Boolean ignoreWordsWithAllCaps = true;
 
     protected String text;
 
@@ -55,38 +56,42 @@ public class SpellRequest {
     }
 
     @XmlAttribute(name = "textalreadyclipped")
-    public int getTextAlreadyClipped() {
+    @XmlJavaTypeAdapter(BooleanAdaptor.class)
+    public Boolean isTextAlreadyClipped() {
         return textAlreadyClipped;
     }
 
     @XmlAttribute(name = "ignoredups")
-    public int getIgnoreDuplicates() {
+    @XmlJavaTypeAdapter(BooleanAdaptor.class)
+    public Boolean isIgnoreDuplicates() {
         return ignoreDuplicates;
     }
 
     @XmlAttribute(name = "ignoredigits")
-    public int getIgnoreWordsWithDigits() {
+    @XmlJavaTypeAdapter(BooleanAdaptor.class)
+    public Boolean isIgnoreWordsWithDigits() {
         return ignoreWordsWithDigits;
     }
 
     @XmlAttribute(name = "ignoreallcaps")
-    public int getIgnoreWordsWithAllCaps() {
+    @XmlJavaTypeAdapter(BooleanAdaptor.class)
+    public Boolean isIgnoreWordsWithAllCaps() {
         return ignoreWordsWithAllCaps;
     }
 
-    public void setTextAlreadyClipped(int textAlreadyClipped) {
+    public void setTextAlreadyClipped(Boolean textAlreadyClipped) {
         this.textAlreadyClipped = textAlreadyClipped;
     }
 
-    public void setIgnoreDuplicates(int ignoreDuplicates) {
+    public void setIgnoreDuplicates(Boolean ignoreDuplicates) {
         this.ignoreDuplicates = ignoreDuplicates;
     }
 
-    public void setIgnoreWordsWithDigits(int ignoreWordsWithDigits) {
+    public void setIgnoreWordsWithDigits(Boolean ignoreWordsWithDigits) {
         this.ignoreWordsWithDigits = ignoreWordsWithDigits;
     }
 
-    public void setIgnoreWordsWithAllCaps(int ignoreWordsWithAllCaps) {
+    public void setIgnoreWordsWithAllCaps(Boolean ignoreWordsWithAllCaps) {
         this.ignoreWordsWithAllCaps = ignoreWordsWithAllCaps;
     }
 }

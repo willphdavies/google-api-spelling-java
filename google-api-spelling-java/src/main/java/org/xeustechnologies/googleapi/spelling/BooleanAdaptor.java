@@ -17,21 +17,23 @@
 
 package org.xeustechnologies.googleapi.spelling;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
 /**
+ * Converts Boolean to Integer and back
+ * 
  * @author Kamran Zafar
  * 
  */
-public enum Language {
-    DANISH("da"), GERMAN("de"), ENGLISH("en"), SPANISH("es"), FINNISH("fi"), FRENCH("fr"), ITALIAN("it"), DUTCH("nl"), POLISH(
-            "pl"), PORTUGUESE("pt"), SWEDISH("sv");
+public class BooleanAdaptor extends XmlAdapter<Integer, Boolean> {
 
-    private final String code;
-
-    private Language(String code) {
-        this.code = code;
+    @Override
+    public Integer marshal(Boolean v) throws Exception {
+        return v == null ? null : v ? 1 : 0;
     }
 
-    public String code() {
-        return code;
+    @Override
+    public Boolean unmarshal(Integer v) throws Exception {
+        return v == null ? null : v == 1;
     }
 }
